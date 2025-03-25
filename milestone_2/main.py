@@ -4,6 +4,7 @@ from stepper_motor import StepperMotor
 from corexy_controller import CoreXYController
 from parse_hersheytext_json import load_font_from_hersheytext, draw_string
 from pen_servo import HardwareServoLGPIO
+from motion_planner import MotionPlanner
 import time
 import lgpio
 
@@ -27,20 +28,23 @@ motor_b = StepperMotor(GPIO_CHIP, B_STEP, B_DIR, STEP_DELAY)
 corexy = CoreXYController(motor_a, motor_b, steps_per_mm=STEPS_PER_MM)
 servo = HardwareServoLGPIO(18)  # BCM pin 18 on Pi 5 = GPIO line 18
 
+# Initialize motion planner
+planner = MotionPlanner(corexy, servo)
+planner.set_origin(0, 0)
+planner.set_bounds(xmin=0, xmax=700, ymin=0, ymax=700)
+
+# Read in font
+font = load_font_from_hersheytext("hersheytext.json", "futural")
+
 
 try:
-    font = load_font_from_hersheytext("hersheytext.json", "timesr")
+    planner.draw_string("Free Diddy123456789", font, scale=0.5, spacing=14   )
+except:
+    print("\n[!] Interrupted by user.")
 
-    servo.pen_up()
-    time.sleep(1)
-    
-    corexy.move_to(100, 100)
-    servo.pen_down()
-    time.sleep(1)
-    corexy.move_to(0, 0)
-    servo.pen_up()
 finally:
+    print("[*] Cleaning up...")
+    servo.pen_up()
+    servo.close()
     motor_a.close()
     motor_b.close()
-    servo.close()
-    print("GPIOs released.")

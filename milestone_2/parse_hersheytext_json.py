@@ -2,64 +2,44 @@ import json
 
 # ---------- FONT PARSER ---------- #
 
-def parse_svg_path(d_str):
+import json
+
+def parse_stroke_data(d_string):
     strokes = []
-    current_stroke = []
-    tokens = d_str.replace(',', ' ').split()
-    i = 0
-
-    while i < len(tokens):
-        token = tokens[i]
-        if token.startswith('M'):
-            if current_stroke:
-                strokes.append(current_stroke)
-                current_stroke = []
-            x = float(token[1:])
-            y = float(tokens[i + 1])
-            current_stroke.append((x, y))
-            i += 2
-        elif token.startswith('L'):
-            x = float(token[1:])
-            y = float(tokens[i + 1])
-            current_stroke.append((x, y))
-            i += 2
-        else:
-            x = float(token)
-            y = float(tokens[i + 1])
-            current_stroke.append((x, y))
-            i += 2
-
-    if current_stroke:
-        strokes.append(current_stroke)
+    segments = d_string.strip().split("M")[1:]  # remove empty before first M
+    for seg in segments:
+        seg = seg.strip()
+        if not seg:
+            continue
+        points = seg.replace("L", "").split()
+        stroke = []
+        for pt in points:
+            if "," in pt:
+                x_str, y_str = pt.split(",")
+                stroke.append((float(x_str), float(y_str)))
+        strokes.append(stroke)
     return strokes
 
+def load_font_from_hersheytext(json_path, font_name):
+    with open(json_path, "r") as f:
+        font_data = json.load(f)
 
-def load_font_from_hersheytext(file_path, font_name):
-    with open(file_path, 'r') as f:
-        data = json.load(f)
-
-    if font_name not in data:
+    if font_name not in font_data:
         raise ValueError(f"Font '{font_name}' not found in file.")
 
-    font_data = data[font_name]["chars"]
-    char_map = {}
-    ascii_code = 32  # start at space
+    raw_font = font_data[font_name]
+    raw_chars = raw_font["chars"]
 
-    for entry in font_data:
-        d = entry["d"]
-        o = entry.get("o", 0)
-        strokes = parse_svg_path(d)
+    # Hershey fonts typically start at ASCII 32 (space)
+    ascii_offset = 33
+    font = {}
+    for i, char_data in enumerate(raw_chars):
+        ascii_code = ascii_offset + i
+        char = chr(ascii_code)
+        font[char] = parse_stroke_data(char_data["d"])
 
-        # Normalize using offset 'o'
-        normalized = [
-            [(x - o, y) for (x, y) in stroke]
-            for stroke in strokes
-        ]
+    return font
 
-        char_map[chr(ascii_code)] = normalized
-        ascii_code += 1
-
-    return char_map
 
 # ---------- DRAW FUNCTION ---------- #
 
