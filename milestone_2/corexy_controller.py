@@ -64,7 +64,7 @@ class CoreXYController:
         dy_steps = int(dy * self.steps_per_mm)
 
         a_steps = dx_steps + dy_steps
-        b_steps = dx_steps - dy_steps
+        b_steps = dy_steps - dx_steps
 
         move_motors_together(self.motor_a, self.motor_b, a_steps, b_steps)
 

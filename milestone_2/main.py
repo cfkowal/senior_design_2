@@ -47,8 +47,10 @@ try:
     #print(f"LLM RESPONSE: {math_response}")
     #planner.draw_string("A", font, scale=1, spacing=14   )
     
-
-    
+    planner.move_to(10, 0)
+    print(planner.get_coords())
+    planner.move_to(0, 0)
+    print(planner.get_coords())
     
     
 except:
