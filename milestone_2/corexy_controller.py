@@ -55,6 +55,10 @@ class CoreXYController:
         self.steps_per_mm = steps_per_mm
         self.x = 0.0
         self.y = 0.0
+    
+    def set_abs_loc(self, x, y):
+        self.x = x
+        self.y = y
 
     def move_to(self, target_x, target_y):
         dx = target_x - self.x

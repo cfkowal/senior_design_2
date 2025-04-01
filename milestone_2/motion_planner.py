@@ -1,9 +1,11 @@
 import time
 
 class MotionPlanner:
-    def __init__(self, corexy, servo, bounds=None):
+    def __init__(self, corexy, x_switch, y_switch, servo, bounds=None):
         self.corexy = corexy
         self.servo = servo
+        self.x_switch = x_switch
+        self.y_switch = y_switch
         self.x = 0
         self.y = 0
         self.bounds = bounds
@@ -21,10 +23,24 @@ class MotionPlanner:
         return self.x, self.y
         
     def home(self):
-        print("[HOME] Moving to (0, 0)... (limit switches TBD)")
-        self.set_origin(0, 0)
-        self.move_to(0, 0)
 
+        print("Homing X")
+        while not self.x_switch.is_triggered():
+                self.move_to(self.x - 1, self.y)
+                time.sleep(0.00011)
+        print("Homing Y")
+        while not self.y_switch.is_triggered():
+                self.move_to(self.x, self.y - 1)
+                time.sleep(0.00011)
+        
+        self.move_to(self.x + 10, self.y + 10)
+        self.x = 0
+        self.y = 0
+        
+        self.corexy.set_abs_loc(self.x, self.y)
+        
+        # TODO: tune steps per mm and set bounds
+        
     def move_to(self, x, y):
         if self.bounds:
             xmin, xmax, ymin, ymax = self.bounds

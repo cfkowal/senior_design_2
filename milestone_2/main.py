@@ -5,6 +5,7 @@ from corexy_controller import CoreXYController
 from parse_hersheytext_json import load_font_from_hersheytext
 from pen_servo import HardwareServoLGPIO
 from motion_planner import MotionPlanner
+from limit_switch import LimitSwitch
 from image_prompt_solver import ImagePromptSolver
 import time
 import lgpio
@@ -14,6 +15,8 @@ A_STEP = 13
 A_DIR  = 10
 B_STEP = 5
 B_DIR  = 14
+LIMIT_X = 2
+LIMIT_Y = 3
 PEN_SERVO = 18
 
 # GPIO chip
@@ -29,10 +32,13 @@ motor_b = StepperMotor(GPIO_CHIP, B_STEP, B_DIR, STEP_DELAY)
 corexy = CoreXYController(motor_a, motor_b, steps_per_mm=STEPS_PER_MM)
 servo = HardwareServoLGPIO(18)  # BCM pin 18 on Pi 5 = GPIO line 18
 
+# Initialize limit switches
+limit_x = LimitSwitch(LIMIT_X, GPIO_CHIP)
+limit_y = LimitSwitch(LIMIT_Y, GPIO_CHIP)
+
 # Initialize motion planner
-planner = MotionPlanner(corexy, servo)
-planner.set_origin(0, 0)
-planner.set_bounds(xmin=0, xmax=700, ymin=0, ymax=700)
+planner = MotionPlanner(corexy, limit_x, limit_y, servo)
+#planner.set_origin(0, 0)
 
 # Read in font
 font = load_font_from_hersheytext("hersheytext.json", "futural")
@@ -43,14 +49,8 @@ solver = ImagePromptSolver()
 
 
 try:
-    #math_response = solver.run(prompt="Solve this math problem and return only the solution.", use_camera=True, mode="math")
-    #print(f"LLM RESPONSE: {math_response}")
-    #planner.draw_string("A", font, scale=1, spacing=14   )
     
-    planner.move_to(10, 0)
-    print(planner.get_coords())
-    planner.move_to(0, 0)
-    print(planner.get_coords())
+    planner.home()
     
     
 except:
