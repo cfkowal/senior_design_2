@@ -6,7 +6,6 @@ class HardwareServoLGPIO:
         self.handle = lgpio.gpiochip_open(chip)
         self.pin = gpio_pin
         self.freq = 50  # 50Hz PWM for servo
-
         # Claim pin (optional — usually only needed for outputs)
         lgpio.gpio_claim_output(self.handle, self.pin, 0)
 
@@ -16,10 +15,30 @@ class HardwareServoLGPIO:
         """
         lgpio.tx_pwm(self.handle, self.pin, self.freq, percent)
     def pen_up(self):
+            
+        
+        
+        
+        self.set_duty_percent(4)
+        time.sleep(0.015)
+        self.set_duty_percent(4.5)
+        time.sleep(0.015)
+        self.set_duty_percent(5)
+        time.sleep(0.015)
+        self.set_duty_percent(5.5)
+        time.sleep(0.015)
         self.set_duty_percent(6)
-    
+        
     def pen_down(self):
-        self.set_duty_percent(3)
+        self.set_duty_percent(6)
+        time.sleep(0.015)
+        self.set_duty_percent(5.5)
+        time.sleep(0.015)
+        self.set_duty_percent(5)
+        time.sleep(0.015)
+        self.set_duty_percent(4.5)
+        time.sleep(0.015)
+        self.set_duty_percent(4)
         
     def stop(self):
         lgpio.tx_pwm(self.handle, self.pin, self.freq, 0)
