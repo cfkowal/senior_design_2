@@ -30,7 +30,7 @@ STEPS_PER_MM = 19.6   # depends on the belt/pulley setup
 motor_a = StepperMotor(GPIO_CHIP, A_STEP, A_DIR, STEP_DELAY)
 motor_b = StepperMotor(GPIO_CHIP, B_STEP, B_DIR, STEP_DELAY)
 corexy = CoreXYController(motor_a, motor_b, steps_per_mm=STEPS_PER_MM)
-servo = HardwareServoLGPIO(18)  # BCM pin 18 on Pi 5 = GPIO line 18
+servo = HardwareServoLGPIO(PEN_SERVO) 
 
 # Initialize limit switches
 limit_x = LimitSwitch(LIMIT_X, GPIO_CHIP)
@@ -51,17 +51,18 @@ solver = ImagePromptSolver()
 try:
     
     planner.home()
-    planner.move_to(60, 50)
-    planner.draw_string("1 2 3 4 5 6 7 8", font=font, scale=0.4, spacing=13, line_height=20, space_width=1.0)
+    planner.move_to(20, 150)
+    #ans = solver.run(use_camera=True, model="gpt-4o", mode="math")
+    #planner.draw_string(ans, font, scale=0.5, spacing=13, line_height=20, space_width=1.0)
+    planner.draw_string("123456789", font, scale=0.25, spacing=16)
+    
 
     
-except:
-    print("\n[!] Interrupted by user.")
+except Exception as e:
+    print(e)
     
 finally:
-    print("[*] Cleaning up...")
-    
-    servo.pen_up()
+    planner.return_to_home()
     servo.close()
     motor_a.close()
     motor_b.close()

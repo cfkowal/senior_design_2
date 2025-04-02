@@ -5,9 +5,11 @@ class HardwareServoLGPIO:
     def __init__(self, gpio_pin, chip=0):
         self.handle = lgpio.gpiochip_open(chip)
         self.pin = gpio_pin
-        self.freq = 50  # 50Hz PWM for servo
-        # Claim pin (optional — usually only needed for outputs)
+        self.freq = 50  
+        self.up_height = 6
         lgpio.gpio_claim_output(self.handle, self.pin, 0)
+        self.current_duty = self.up_height
+        self.set_duty_percent(self.current_duty)
 
     def set_duty_percent(self, percent):
         """
@@ -15,34 +17,37 @@ class HardwareServoLGPIO:
         """
         lgpio.tx_pwm(self.handle, self.pin, self.freq, percent)
     def pen_up(self):
-            
         
         
+        intervals = 5
+        interval_size = (self.up_height - self.current_duty) / intervals
         
-        self.set_duty_percent(4)
-        time.sleep(0.015)
-        self.set_duty_percent(4.5)
-        time.sleep(0.015)
-        self.set_duty_percent(5)
-        time.sleep(0.015)
-        self.set_duty_percent(5.5)
-        time.sleep(0.015)
-        self.set_duty_percent(6)
+        for _ in range(intervals):
+                self.set_duty_percent(self.current_duty + interval_size)
+                self.current_duty = self.current_duty + interval_size
+                time.sleep(0.015)
+
+    def pen_down(self, current_X):
+        down_height = self.calc_down_percent(current_X)
         
-    def pen_down(self):
-        self.set_duty_percent(6)
-        time.sleep(0.015)
-        self.set_duty_percent(5.5)
-        time.sleep(0.015)
-        self.set_duty_percent(5)
-        time.sleep(0.015)
-        self.set_duty_percent(4.5)
-        time.sleep(0.015)
-        self.set_duty_percent(4)
+        intervals = 5
+        interval_size = (self.current_duty - down_height) / intervals
         
+        for _ in range(intervals):
+                self.set_duty_percent(self.current_duty - interval_size)
+                self.current_duty -= interval_size
+                time.sleep(0.015)
+                
+    def calc_down_percent(self, current_X):
+        slope = 0.0044
+        intercept = 3.766
+        down_pct = current_X * slope + intercept  
+        
+        return down_pct          
     def stop(self):
         lgpio.tx_pwm(self.handle, self.pin, self.freq, 0)
 
     def close(self):
+        
         self.stop()
         lgpio.gpiochip_close(self.handle)

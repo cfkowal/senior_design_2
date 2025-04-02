@@ -23,12 +23,10 @@ class MotionPlanner:
         return self.x, self.y
         
     def home(self):
-
-        print("Homing X")
+        self.servo.pen_up()
         while not self.x_switch.is_triggered():
                 self.move_to(self.x - 1, self.y)
                 #time.sleep(0.00005)
-        print("Homing Y")
         while not self.y_switch.is_triggered():
                 self.move_to(self.x, self.y - 1)
                 #time.sleep(0.00005)
@@ -40,6 +38,10 @@ class MotionPlanner:
         self.corexy.set_abs_loc(self.x, self.y)
         
         # TODO: tune steps per mm and set bounds
+    def return_to_home(self):
+        self.servo.pen_up()
+        time.sleep(0.01)
+        self.move_to(0, 0)
         
     def move_to(self, x, y):
         if self.bounds:
@@ -103,7 +105,7 @@ class MotionPlanner:
                 self.move_to(x0, y0)
                 time.sleep(0.01)
 
-                self.servo.pen_down()
+                self.servo.pen_down(cursor_x)
                 time.sleep(0.05)
 
                 for (x, y) in stroke[1:]:
