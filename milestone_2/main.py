@@ -46,13 +46,13 @@ solver = ImagePromptSolver()
 
 
 
-
+# NEED TO SET ORIGIN WHEN START WRITING ANSWER, IMPORTANT FOR LINE SPACING
 
 try:
     
     planner.home()
-    planner.move_to(85, 130)
-    planner.draw_string("AB", font=font, scale=1.0, spacing=30, line_height=20, space_width=1.0)
+    planner.move_to(60, 50)
+    planner.draw_string("1 2 3 4 5 6 7 8", font=font, scale=0.4, spacing=13, line_height=20, space_width=1.0)
 
     
 except:

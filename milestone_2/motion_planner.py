@@ -52,7 +52,7 @@ class MotionPlanner:
         
 
     def transform(self, x, y):
-        return x, -y # 
+        return x, -y 
 
     def draw_string(self, text, font, scale=1.0, spacing=3.0, line_height=20, space_width=1.0):
         cursor_x, cursor_y = self.x, self.y
@@ -60,12 +60,12 @@ class MotionPlanner:
 
         for char in text:
             if char == '\n':
-                cursor_x -= line_height * scale
-                cursor_y = origin_y
+                cursor_y -= line_height * scale
+                cursor_x = origin_x
                 continue
 
             if char == ' ':
-                cursor_y += spacing * scale * space_width
+                cursor_x += spacing * scale * space_width
                 continue
 
             strokes = font.get(char)
