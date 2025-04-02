@@ -14,7 +14,7 @@ def parse_stroke_data(d_string):
                 x_str, y_str = pt.split(",")
                 x = float(x_str)
                 y = float(y_str)
-                stroke.append((-y, x))  # Apply 90° CCW rotation
+                stroke.append((x, y))  # ✅ Use direct x, y (no rotation)
         strokes.append(stroke)
     return strokes
 
@@ -28,7 +28,7 @@ def load_font_from_hersheytext(json_path, font_name):
     raw_font = font_data[font_name]
     raw_chars = raw_font["chars"]
 
-    ascii_offset = 32
+    ascii_offset = 33
     font = {}
     for i, char_data in enumerate(raw_chars):
         ascii_code = ascii_offset + i

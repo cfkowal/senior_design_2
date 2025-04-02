@@ -66,7 +66,7 @@ class CoreXYController:
 
         dx_steps = int(dx * self.steps_per_mm)
         dy_steps = int(dy * self.steps_per_mm)
-
+        
         a_steps = dx_steps + dy_steps
         b_steps = dy_steps - dx_steps
 

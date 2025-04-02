@@ -27,11 +27,11 @@ class MotionPlanner:
         print("Homing X")
         while not self.x_switch.is_triggered():
                 self.move_to(self.x - 1, self.y)
-                time.sleep(0.00011)
+                #time.sleep(0.00005)
         print("Homing Y")
         while not self.y_switch.is_triggered():
                 self.move_to(self.x, self.y - 1)
-                time.sleep(0.00011)
+                #time.sleep(0.00005)
         
         self.move_to(self.x + 10, self.y + 10)
         self.x = 0
@@ -52,7 +52,7 @@ class MotionPlanner:
         
 
     def transform(self, x, y):
-        return -y, x  # 90° CCW rotation
+        return x, -y # 
 
     def draw_string(self, text, font, scale=1.0, spacing=3.0, line_height=20, space_width=1.0):
         cursor_x, cursor_y = self.x, self.y
@@ -116,7 +116,7 @@ class MotionPlanner:
                 self.servo.pen_up()
                 time.sleep(0.01)
 
-            cursor_y += char_width
+            cursor_x += char_width
 
         self.x = cursor_x
         self.y = cursor_y

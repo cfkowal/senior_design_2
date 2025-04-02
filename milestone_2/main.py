@@ -24,7 +24,7 @@ GPIO_CHIP = 0
 
 # Stepper motor delay and steps per mm (calibrate later)
 STEP_DELAY = 0.00011  # 1ms between steps
-STEPS_PER_MM = 10   # depends on the belt/pulley setup
+STEPS_PER_MM = 19.6   # depends on the belt/pulley setup
 
 # Initialize motors and controller
 motor_a = StepperMotor(GPIO_CHIP, A_STEP, A_DIR, STEP_DELAY)
@@ -51,7 +51,9 @@ solver = ImagePromptSolver()
 try:
     
     planner.home()
-    
+    planner.move_to(85, 130)
+    planner.draw_string("AB", font=font, scale=1.0, spacing=30, line_height=20, space_width=1.0)
+
     
 except:
     print("\n[!] Interrupted by user.")
@@ -59,6 +61,7 @@ except:
 finally:
     print("[*] Cleaning up...")
     
+    servo.pen_up()
     servo.close()
     motor_a.close()
     motor_b.close()
