@@ -33,6 +33,10 @@ def load_font_from_hersheytext(json_path, font_name):
     for i, char_data in enumerate(raw_chars):
         ascii_code = ascii_offset + i
         char = chr(ascii_code)
-        font[char] = parse_stroke_data(char_data["d"])
+        font[char] = {
+            "strokes": parse_stroke_data(char_data["d"]),
+            "advance": char_data.get("o", 10)  # fallback spacing
+        }
 
     return font
+

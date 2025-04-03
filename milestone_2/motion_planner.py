@@ -58,13 +58,13 @@ class MotionPlanner:
 
     def draw_string(self, text, font, scale=1.0, spacing=3.0, line_height=20, space_width=1.0):
         
-        #self.set_origin(self.x, self.y)
+        self.set_origin(self.x, self.y)
         cursor_x, cursor_y = self.x, self.y
         origin_x, origin_y = self.origin
         
 
         for char in text:
-            self.move_to(cursor_x, cursor_y)
+            #self.move_to(cursor_x, cursor_y)
             if char == '\n':
                 cursor_y -= line_height * scale
                 cursor_x = origin_x
@@ -74,22 +74,28 @@ class MotionPlanner:
                 cursor_x += spacing * scale * space_width
                 continue
 
-            strokes = font.get(char)
-            if not strokes:
+            glyph = font.get(char)
+            if not glyph:
                 print(f"[!] Character '{char}' not in font")
                 cursor_x += spacing * scale
                 continue
 
-            char_width = spacing * scale
-            char_right = cursor_x + char_width
+            strokes = glyph["strokes"]
+            advance = glyph["advance"] * scale * spacing
+            if not strokes:
+                print(f"[!] Character '{char}' not in font")
+                cursor_x += spacing * scale
+                continue
+                
+            char_right = cursor_x + advance
 
             if self.bounds:
                 xmin, xmax, ymin, ymax = self.bounds
 
-                if char_right > xmax:
+                if char_right >= xmax:
                     cursor_y -= line_height * scale
                     cursor_x = origin_x
-                    char_right = cursor_x + char_width
+                    char_right = cursor_x + advance
         
                 if cursor_x < xmin:
                     print("[!] Exceeded horizontal bounds, stopping draw")
@@ -122,7 +128,7 @@ class MotionPlanner:
                 self.servo.pen_up()
                 time.sleep(0.01)
 
-            cursor_x += char_width
+            cursor_x += advance
 
         self.x = cursor_x
         self.y = cursor_y
