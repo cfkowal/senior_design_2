@@ -74,3 +74,4 @@ class CoreXYController:
 
         self.x = target_x
         self.y = target_y
+        

@@ -36,8 +36,8 @@ class MotionPlanner:
         self.y = 0
         
         self.corexy.set_abs_loc(self.x, self.y)
-        
-        # TODO: tune steps per mm and set bounds
+        self.set_bounds(xmin=0, xmax=190, ymin=0, ymax=240)
+
     def return_to_home(self):
         self.servo.pen_up()
         time.sleep(0.01)
@@ -57,10 +57,14 @@ class MotionPlanner:
         return x, -y 
 
     def draw_string(self, text, font, scale=1.0, spacing=3.0, line_height=20, space_width=1.0):
+        
+        #self.set_origin(self.x, self.y)
         cursor_x, cursor_y = self.x, self.y
         origin_x, origin_y = self.origin
+        
 
         for char in text:
+            self.move_to(cursor_x, cursor_y)
             if char == '\n':
                 cursor_y -= line_height * scale
                 cursor_x = origin_x
@@ -73,20 +77,20 @@ class MotionPlanner:
             strokes = font.get(char)
             if not strokes:
                 print(f"[!] Character '{char}' not in font")
-                cursor_y += spacing * scale
+                cursor_x += spacing * scale
                 continue
 
             char_width = spacing * scale
-            char_right = cursor_y + char_width
+            char_right = cursor_x + char_width
 
             if self.bounds:
                 xmin, xmax, ymin, ymax = self.bounds
 
-                if char_right > ymax:
-                    cursor_x -= line_height * scale
-                    cursor_y = origin_y
-                    char_right = cursor_y + char_width
-
+                if char_right > xmax:
+                    cursor_y -= line_height * scale
+                    cursor_x = origin_x
+                    char_right = cursor_x + char_width
+        
                 if cursor_x < xmin:
                     print("[!] Exceeded horizontal bounds, stopping draw")
                     break

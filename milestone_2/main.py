@@ -23,7 +23,7 @@ PEN_SERVO = 18
 GPIO_CHIP = 0
 
 # Stepper motor delay and steps per mm (calibrate later)
-STEP_DELAY = 0.00011  # 1ms between steps
+STEP_DELAY = 0.00011
 STEPS_PER_MM = 19.6   # depends on the belt/pulley setup
 
 # Initialize motors and controller
@@ -51,10 +51,10 @@ solver = ImagePromptSolver()
 try:
     
     planner.home()
-    planner.move_to(20, 150)
+    planner.move_to(0,0 )
     #ans = solver.run(use_camera=True, model="gpt-4o", mode="math")
     #planner.draw_string(ans, font, scale=0.5, spacing=13, line_height=20, space_width=1.0)
-    planner.draw_string("123456789", font, scale=0.25, spacing=16)
+    #planner.draw_string("sia       fue         sia           fue                                 sia", font, scale=0.25, spacing=16, line_height=30)
     
 
     
@@ -62,7 +62,7 @@ except Exception as e:
     print(e)
     
 finally:
-    planner.return_to_home()
+    #planner.return_to_home()
     servo.close()
     motor_a.close()
     motor_b.close()
