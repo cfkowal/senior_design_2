@@ -7,6 +7,7 @@ from pen_servo import HardwareServoLGPIO
 from motion_planner import MotionPlanner
 from limit_switch import LimitSwitch
 from image_prompt_solver import ImagePromptSolver
+from plotter_io import PlotterIO
 import time
 import lgpio
 
@@ -18,6 +19,10 @@ B_DIR  = 14
 LIMIT_X = 2
 LIMIT_Y = 3
 PEN_SERVO = 18
+START_BUTTON = 17 # ACTIVE HIGH
+ERROR_LED = 6
+SOLVING_LED = 27 # ACTIVE LOW
+WRITING_LED = 22
 
 # GPIO chip
 GPIO_CHIP = 0
@@ -38,28 +43,39 @@ limit_y = LimitSwitch(LIMIT_Y, GPIO_CHIP)
 
 # Initialize motion planner
 planner = MotionPlanner(corexy, limit_x, limit_y, servo)
-#planner.set_origin(0, 0)
+
+# Initialize plotter io
+io = PlotterIO(GPIO_CHIP, START_BUTTON, ERROR_LED, SOLVING_LED, WRITING_LED)
 
 # Read in font
 font = load_font_from_hersheytext("hersheytext.json", "futural")
 solver = ImagePromptSolver()
 
 
-
-# NEED TO SET ORIGIN WHEN START WRITING ANSWER, IMPORTANT FOR LINE SPACING
-
 try:
-    
     planner.home()
-    planner.move_to(75, 170)
-
-    #ans = solver.run(use_camera=True, model="gpt-4o", mode="math")
-    #planner.draw_string(ans, font, scale=0.5, spacing=13, line_height=20, space_width=1.0)
-    planner.draw_string("oh,\nbut what if you fly?", font, scale=0.25, spacing=2, line_height=50, space_width=7.5)
     
-
+    while (True)
+        # wait for button press
+        io.wait_for_press()
+        
+        # solve
+        io.set_led("solving", True)
+        ans = solver.run(use_camera=True, model="gpt-4o", mode="math")
+        print(ans)
+        io.set_led("solving", False)
+        
+        # write
+        io.set_led("writing", True)
+        planner.move_to(55, 120)
+        planner.draw_string(ans, font, scale=0.25, spacing=2, line_height=50, space_width=7.5)
+        io.set_led("writing", False)
     
+    #planner.draw_string("Hey Drew :)", font, scale=0.25, spacing=2, line_height=50, space_width=7.5)
+
 except Exception as e:
+    io.set_led("error", True)
+    sleep(3)
     print(e)
     
 finally:
@@ -67,3 +83,4 @@ finally:
     servo.close()
     motor_a.close()
     motor_b.close()
+    io.close()
