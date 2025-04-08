@@ -41,6 +41,8 @@ class HardwareServoLGPIO:
     def calc_down_percent(self, current_X):
         slope = 0.0044
         intercept = 3.766
+        # PEN INTERCEPT TO START 3.766
+        intercept = 3.675
         down_pct = current_X * slope + intercept  
         
         return down_pct          

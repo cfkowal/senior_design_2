@@ -53,9 +53,12 @@ solver = ImagePromptSolver()
 
 
 try:
+    
+    """
+    start_y = 40
     planner.home()
     
-    while (True)
+    while True:   
         # wait for button press
         io.wait_for_press()
         
@@ -67,16 +70,23 @@ try:
         
         # write
         io.set_led("writing", True)
-        planner.move_to(55, 120)
+        planner.move_to(55, start_y)
         planner.draw_string(ans, font, scale=0.25, spacing=2, line_height=50, space_width=7.5)
         io.set_led("writing", False)
-    
-    #planner.draw_string("Hey Drew :)", font, scale=0.25, spacing=2, line_height=50, space_width=7.5)
-
+        start_y -= 40
+        planner.return_to_home()    
+        """
+    planner.home()
+    #planner.move_to(100, 140)
+    #planner.draw_string("x^{1111111111111111111111111111111}", font)
+    planner.move_to(150, 190)
+    planner.draw_string("x^{1111111111111111111111111111111111111111111} x + 2", font)
+        
 except Exception as e:
     io.set_led("error", True)
-    sleep(3)
+    print("ERROR")
     print(e)
+    sleep(3)
     
 finally:
     planner.return_to_home()

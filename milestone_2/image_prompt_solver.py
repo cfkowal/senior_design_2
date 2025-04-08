@@ -17,11 +17,17 @@ class ImagePromptSolver:
 
     def get_system_prompt(self, mode="describe"):
         if mode == "math":
-            return """You are an AI that extracts and solves handwritten math problems
-                      from images. Given an image of a handwritten math problem, output
-                      only the steps and the final solution in plain text, without any
-                      explanation or formatting. Do not use LaTex, Markdown, or any special
-                      characters beyond standard arithmetic symbols."""
+            return """You are an AI that extracts and solves handwritten math problems from images. 
+                    Given an image of a handwritten math problem, output only the steps and the final solution 
+                    in plain text, without any explanation or formatting. Do not use LaTex, Markdown, or any special 
+                    characters beyond standard arithmetic symbols. You are not to write any English text, 
+                    only the mathematical solution to the question. The physical space that the answer takes up 
+                    is of importance; this is why you cannot include English text. Use only characters in ASCII.
+
+                    To denote exponents, use the caret (`^`) symbol. For multi-character exponents, wrap them in 
+                    curly braces (`{}`), e.g., `x^{12 + y}` or `(a+b)^{2}`. These will be rendered using superscript formatting 
+                    by the physical pen plotter."""
+
         else:
             return "Describe the image in detail."
 
