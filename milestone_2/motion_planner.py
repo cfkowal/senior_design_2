@@ -140,17 +140,17 @@ class MotionPlanner:
             self.servo.pen_up()
             time.sleep(0.05)
             self.move_to(x0, y0)
-            time.sleep(0.01)
+            time.sleep(0.05)
 
             self.servo.pen_down(base_x)
-            time.sleep(0.05)
+            time.sleep(0.15)
 
             for (x, y) in stroke[1:]:
                 rx, ry = self.transform(x, y)
                 xi = base_x + rx * draw_scale
                 yi = base_y + ry * draw_scale
                 self.move_to(xi, yi)
-                time.sleep(0.01)
+                time.sleep(0.05)
 
             self.servo.pen_up()
             time.sleep(0.01)

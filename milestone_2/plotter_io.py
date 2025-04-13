@@ -19,9 +19,9 @@ class PlotterIO:
         # Input button
         lgpio.gpio_claim_input(self.handle, self.start_button)
 
-        # LEDs (active low)
+        # LEDs (active high)
         for pin in self.led_pins.values():
-            lgpio.gpio_claim_output(self.handle, pin, 1)  # 1 = off (active low)
+            lgpio.gpio_claim_output(self.handle, pin, 0)  
 
     def is_start_pressed(self):
         return lgpio.gpio_read(self.handle, self.start_button) == 1
@@ -46,14 +46,14 @@ class PlotterIO:
             time.sleep(0.01)
 
     def set_led(self, name, state):
-        """Set LED state: True = ON, False = OFF (active low logic)"""
+        """Set LED state: true is on, false is off, active high"""
         if name in self.led_pins:
-            lgpio.gpio_write(self.handle, self.led_pins[name], 0 if state else 1)
+            lgpio.gpio_write(self.handle, self.led_pins[name], 1 if state else 0)
 
     def all_off(self):
         """Turn off all LEDs"""
         for pin in self.led_pins.values():
-            lgpio.gpio_write(self.handle, pin, 1)
+            lgpio.gpio_write(self.handle, pin, 0)
 
     def close(self):
         self.all_off()

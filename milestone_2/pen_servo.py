@@ -6,11 +6,17 @@ class HardwareServoLGPIO:
         self.handle = lgpio.gpiochip_open(chip)
         self.pin = gpio_pin
         self.freq = 50  
-        self.up_height = 6
+        self.up_height = 9
         lgpio.gpio_claim_output(self.handle, self.pin, 0)
         self.current_duty = self.up_height
         self.set_duty_percent(self.current_duty)
-
+        
+        self.debug_down_ht = None
+        
+        
+    def set_down_pct(self, percent):
+        self.debug_down_ht = percent
+        
     def set_duty_percent(self, percent):
         """
         Set PWM duty as a percentage (e.g., 2.5 for 2.5%)
@@ -28,7 +34,10 @@ class HardwareServoLGPIO:
                 time.sleep(0.015)
 
     def pen_down(self, current_X):
+        
         down_height = self.calc_down_percent(current_X)
+        
+        #down_height = self.debug_down_ht
         
         intervals = 5
         interval_size = (self.current_duty - down_height) / intervals
@@ -39,10 +48,10 @@ class HardwareServoLGPIO:
                 time.sleep(0.015)
                 
     def calc_down_percent(self, current_X):
-        slope = 0.0044
-        intercept = 3.766
+        slope = 0.01     
+        intercept = 3.84
+        
         # PEN INTERCEPT TO START 3.766
-        intercept = 3.675
         down_pct = current_X * slope + intercept  
         
         return down_pct          

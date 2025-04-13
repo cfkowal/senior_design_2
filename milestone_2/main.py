@@ -21,7 +21,7 @@ LIMIT_Y = 3
 PEN_SERVO = 18
 START_BUTTON = 17 # ACTIVE HIGH
 ERROR_LED = 6
-SOLVING_LED = 27 # ACTIVE LOW
+SOLVING_LED = 27 # ACTIVE HIGH
 WRITING_LED = 22
 
 # GPIO chip
@@ -53,9 +53,8 @@ solver = ImagePromptSolver()
 
 
 try:
-    
     """
-    start_y = 40
+    start_y = 70
     planner.home()
     
     while True:   
@@ -70,23 +69,29 @@ try:
         
         # write
         io.set_led("writing", True)
-        planner.move_to(55, start_y)
+        planner.move_to(45, start_y)
         planner.draw_string(ans, font, scale=0.25, spacing=2, line_height=50, space_width=7.5)
         io.set_led("writing", False)
         start_y -= 40
         planner.return_to_home()    
-        """
+    """
+    
+    
     planner.home()
-    #planner.move_to(100, 140)
-    #planner.draw_string("x^{1111111111111111111111111111111}", font)
-    planner.move_to(150, 190)
-    planner.draw_string("x^{1111111111111111111111111111111111111111111} x + 2", font)
-        
+    servo.set_down_pct(3.84)
+    planner.move_to(150, 170)
+    planner.draw_string("XXXXXXXXXXXXXXXXXXXXXXXX", font)
+    #time.sleep(100)
+   
+    #planner.move_to(0, 160  )
+    #planner.draw_string("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", font, scale=0.25, spacing=2, line_height=50, space_width=7.5)
+
+    
 except Exception as e:
     io.set_led("error", True)
     print("ERROR")
     print(e)
-    sleep(3)
+    time.sleep(3)
     
 finally:
     planner.return_to_home()
