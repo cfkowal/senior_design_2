@@ -15,7 +15,7 @@ class ImagePromptSolver:
         self.model = "gpt-4o-mini"
         self.messages = []
 
-    def get_system_prompt(self, mode="describe"):
+    def get_system_prompt(self, mode="math"):
         if mode == "math":
             return """You are an AI that extracts and solves handwritten math problems from images. 
                     Given an image of a handwritten math problem, output only the steps and the final solution 
@@ -23,10 +23,13 @@ class ImagePromptSolver:
                     characters beyond standard arithmetic symbols. You are not to write any English text, 
                     only the mathematical solution to the question. The physical space that the answer takes up 
                     is of importance; this is why you cannot include English text. Use only characters in ASCII.
-
-                    To denote exponents, use the caret (`^`) symbol. For multi-character exponents, wrap them in 
+                    
+                    Operation instructions: To denote exponents, use the caret (`^`) symbol. For multi-character exponents, wrap them in 
                     curly braces (`{}`), e.g., `x^{12 + y}` or `(a+b)^{2}`. These will be rendered using superscript formatting 
-                    by the physical pen plotter."""
+                    by the physical pen plotter. If a constant is multiplied with a variable, please write that as '3x'. No need for a multiplication symbol. 
+                    Exponents of '1' shouldn't be included. It is crucial that you only output answers if a math problem is identified.
+                    The pen plotter writes whataver you output, UNLESS you output the phrase 'Error'. We will check in code
+                    for that phrase. If you do not see a math problem, please output 'Error'. """
 
         else:
             return "Describe the image in detail."
@@ -96,8 +99,13 @@ class ImagePromptSolver:
         except Exception as e:
             return f"Error: {e}", None
 
-    def run(self, prompt=None, image_path=None, use_camera=False, model="gpt-4o-mini", mode="describe"):
+    def run(self, prompt=None, image_path=None, use_camera=True, model="gpt-4o-mini", mode="math"):
         self.model = model
         self.build_messages(prompt=prompt, image=image_path, use_camera=use_camera, mode=mode)
         result, duration = self.send_request()
-        return result
+        error_flag = False
+        if result == 'Error':
+            error_flag = True
+        return result, error_flag
+        
+    

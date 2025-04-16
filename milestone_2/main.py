@@ -12,7 +12,7 @@ import time
 import lgpio
 
 # Define motor pins (BCM numbers)
-A_STEP = 13
+A_STEP = 26
 A_DIR  = 10
 B_STEP = 5
 B_DIR  = 14
@@ -54,44 +54,37 @@ solver = ImagePromptSolver()
 
 try:
     """
-    start_y = 70
     planner.home()
-    
-    while True:   
-        # wait for button press
+    while True:
         io.wait_for_press()
-        
-        # solve
         io.set_led("solving", True)
-        ans = solver.run(use_camera=True, model="gpt-4o", mode="math")
-        print(ans)
+        ans, error = solver.run()
         io.set_led("solving", False)
         
-        # write
-        io.set_led("writing", True)
-        planner.move_to(45, start_y)
-        planner.draw_string(ans, font, scale=0.25, spacing=2, line_height=50, space_width=7.5)
-        io.set_led("writing", False)
-        start_y -= 40
-        planner.return_to_home()    
+        if not error:
+            print(ans)
+            io.set_led("writing", True)
+            planner.move_to(30, 90)
+            planner.draw_string(ans, font)
+            io.set_led("writing", False)
+            planner.return_to_home()
+
+        else:
+            print("Error")
+            io.blink("error")
     """
-    
-    
     planner.home()
-    servo.set_down_pct(3.84)
-    planner.move_to(150, 170)
-    planner.draw_string("XXXXXXXXXXXXXXXXXXXXXXXX", font)
-    #time.sleep(100)
-   
-    #planner.move_to(0, 160  )
-    #planner.draw_string("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", font, scale=0.25, spacing=2, line_height=50, space_width=7.5)
+    planner.move_to(30, 130)
+    planner.draw_string("low taper fade", font)
+    planner.move_to(30, 150)
+    planner.draw_string("chicken jockey", font)
 
     
+    
 except Exception as e:
-    io.set_led("error", True)
-    print("ERROR")
+    print("EXCEPTION")
     print(e)
-    time.sleep(3)
+    io.blink("error")
     
 finally:
     planner.return_to_home()

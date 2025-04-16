@@ -22,7 +22,7 @@ def move_motors_together(motor_a, motor_b, a_steps, b_steps,
     a_counter = 0
     b_counter = 0
     total_steps = max(a_steps, b_steps)
-
+    
     for step in range(total_steps):
         # Compute current delay for acceleration/deceleration
         if step < ramp_steps:

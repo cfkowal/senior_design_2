@@ -49,7 +49,17 @@ class PlotterIO:
         """Set LED state: true is on, false is off, active high"""
         if name in self.led_pins:
             lgpio.gpio_write(self.handle, self.led_pins[name], 1 if state else 0)
-
+    
+    def blink(self, name):
+            if name in self.led_pins:
+                for _ in range(15):
+                    self.set_led(name, True)
+                    time.sleep(0.2)
+                    self.set_led(name, False)
+                    time.sleep(0.2)
+            
+                self.set_led(name, False)
+    
     def all_off(self):
         """Turn off all LEDs"""
         for pin in self.led_pins.values():

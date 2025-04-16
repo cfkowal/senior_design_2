@@ -150,7 +150,7 @@ class MotionPlanner:
                 xi = base_x + rx * draw_scale
                 yi = base_y + ry * draw_scale
                 self.move_to(xi, yi)
-                time.sleep(0.05)
+                #time.sleep(0.05)
 
             self.servo.pen_up()
             time.sleep(0.01)
