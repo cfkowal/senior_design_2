@@ -4,7 +4,7 @@ import lgpio
 import time
 
 class PlotterIO:
-    def __init__(self, chip, start_button, error_led, solving_led, writing_led, debounce_ms=50):
+    def __init__(self, chip, start_button, error_led, solving_led, writing_led, debounce_ms=10):
         self.handle = lgpio.gpiochip_open(chip)
 
         self.start_button = start_button
@@ -28,7 +28,7 @@ class PlotterIO:
 
     def wait_for_press(self):
         """Wait for a clean press-and-release cycle, debounced and foolproof."""
-        print("Waiting for start button...")
+        print("Waiting for start...")
 
         while True:
             if self.is_start_pressed():
@@ -38,11 +38,11 @@ class PlotterIO:
                 release_time = time.time()
 
                 if (release_time - press_time) >= self.debounce_ms:
-                    print("Button press detected")
+                    print("Start button pressed!")
                     return
                 else:
                     print("Ignored bounce/false press")
-
+                
             time.sleep(0.01)
 
     def set_led(self, name, state):

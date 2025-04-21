@@ -29,7 +29,7 @@ class ImagePromptSolver:
                     by the physical pen plotter. If a constant is multiplied with a variable, please write that as '3x'. No need for a multiplication symbol. 
                     Exponents of '1' shouldn't be included. It is crucial that you only output answers if a math problem is identified.
                     The pen plotter writes whataver you output, UNLESS you output the phrase 'Error'. We will check in code
-                    for that phrase. If you do not see a math problem, please output 'Error'. """
+                    for that phrase. If you do not see a math problem, please output 'Error'."""
 
         else:
             return "Describe the image in detail."

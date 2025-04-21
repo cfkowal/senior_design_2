@@ -130,6 +130,7 @@ class MotionPlanner:
 
         for stroke in strokes:
             if not stroke:
+                print("NO STROKE (PAUSE)")
                 continue
 
             sx, sy = stroke[0]
@@ -154,5 +155,5 @@ class MotionPlanner:
 
             self.servo.pen_up()
             time.sleep(0.01)
-
+        time.sleep(0.05)
         return base_x + char_advance, base_y, char_advance

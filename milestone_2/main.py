@@ -53,8 +53,9 @@ solver = ImagePromptSolver()
 
 
 try:
-    """
+    
     planner.home()
+    
     while True:
         io.wait_for_press()
         io.set_led("solving", True)
@@ -64,7 +65,7 @@ try:
         if not error:
             print(ans)
             io.set_led("writing", True)
-            planner.move_to(30, 90)
+            planner.move_to(20, 110)
             planner.draw_string(ans, font)
             io.set_led("writing", False)
             planner.return_to_home()
@@ -72,13 +73,13 @@ try:
         else:
             print("Error")
             io.blink("error")
+    
+    
     """
     planner.home()
-    planner.move_to(30, 130)
-    planner.draw_string("low taper fade", font)
-    planner.move_to(30, 150)
-    planner.draw_string("chicken jockey", font)
-
+    planner.move_to(30, 40)
+    planner.draw_string("abcdefghijklmnopqrstuvwxyz123456789", font)
+    """
     
     
 except Exception as e:

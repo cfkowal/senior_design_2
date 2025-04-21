@@ -6,7 +6,7 @@ class HardwareServoLGPIO:
         self.handle = lgpio.gpiochip_open(chip)
         self.pin = gpio_pin
         self.freq = 50  
-        self.up_height = 6.5
+        self.up_height = 8.5
         lgpio.gpio_claim_output(self.handle, self.pin, 0)
         self.current_duty = self.up_height
         self.set_duty_percent(self.current_duty)
@@ -23,7 +23,7 @@ class HardwareServoLGPIO:
         """
         lgpio.tx_pwm(self.handle, self.pin, self.freq, percent)
     def pen_up(self):
-        
+        #print(f"Pen Up Ordered to {self.current_duty}")
         intervals = 5
         interval_size = (self.up_height - self.current_duty) / intervals
         
@@ -34,9 +34,9 @@ class HardwareServoLGPIO:
 
     def pen_down(self, current_X):
         down_height = self.calc_down_percent(current_X)
-        
+        #print(f"Pen Down ordered to {down_height}")
         #print(str(down_height))
-        intervals = 5
+        intervals = 1   
         interval_size = (self.current_duty - down_height) / intervals
         
         for _ in range(intervals):
@@ -46,8 +46,8 @@ class HardwareServoLGPIO:
                 time.sleep(0.015)
                 
     def calc_down_percent(self, current_X):
-        slope = 0.01     
-        intercept = 3.84
+        slope = 0.0125     
+        intercept = 5.46
         
         # PEN INTERCEPT TO START 3.766
         down_pct = current_X * slope + intercept  
